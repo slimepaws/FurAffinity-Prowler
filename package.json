@@ -1,0 +1,15 @@
+{
+  "name": "FurAffinity Prowler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "furaffinity-api": "^4.5.4",
+    "terminal-size": "^4.0.0",
+    "typescript": "^5.5.3"
+  },
+  "private": true
+}
