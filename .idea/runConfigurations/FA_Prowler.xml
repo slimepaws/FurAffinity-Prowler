@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="FA Prowler" type="NodeJSConfigurationType" path-to-js-file="src/index.ts" typescript-loader="bundled" working-dir="$PROJECT_DIR$">
+    <method v="2" />
+  </configuration>
+</component>
