@@ -77,7 +77,7 @@ export class FurAffinityUser implements IAuthor {
                 if (tempCookies.a == "" || tempCookies.b == "") {
                     writeEmptyCookiesFile(this.JSONcookiesFilePath);
                 }
-                this.cookies = tempCookies;
+                    this.cookies = tempCookies;
             }
             else {
                 writeEmptyCookiesFile(this.JSONcookiesFilePath)

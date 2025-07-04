@@ -6,28 +6,32 @@ export interface ITerminalSize {
 }
 
 export class FAProwlerUI {
-    borderSymbol: string = "#";
-    subBorderSymbol: string = "-";
-    programTitle: string = "FurAffinity Prowler";
-    linePrintOutArray: string[] = new Array<string>();
+    private borderSymbol: string = "#";
+    private subBorderSymbol: string = "-";
+    private programTitle: string = "FurAffinity Prowler";
+    private linePrintOutArray: string[] = new Array<string>();
     terminalSize: ITerminalSize;
-    mainMenuOptions: string[] = [
-        "Close Program",
-        "Write FA data to file"
-    ];
+    mainMenuOptions: Map<number, string> = new Map<number, string>()
 
     constructor() {
         this.terminalSize = this.getTerminalSize();
+        this.mainMenuOptions.set(0, "Close program.");
+        this.mainMenuOptions.set(1, "Save FurAffinity information to file.")
     }
 
     /**
-     * @returns - {@inheritDoc ITerminalSize}.
+     * @returns The ITerminalSize object of the current dimensions of the terminal.
      */
     getTerminalSize(): ITerminalSize {
-        return {
-            columns: terminalSize().columns,
-            rows: terminalSize().rows
-        };
+        this.terminalSize = terminalSize();
+        return this.terminalSize;
+    }
+
+    /**
+     * @returns The constructed string of predetermined characters to subdivide the terminal after desired operations.
+     */
+    getSubHeaderLine(): string {
+        return this.subBorderSymbol.repeat(this.getTerminalSize().columns);
     }
 
     /**
@@ -35,25 +39,16 @@ export class FAProwlerUI {
      */
     displayHeaderBar(): void {
         const borderLine: string = this.borderSymbol.repeat(this.getTerminalSize().columns);
-        this.linePrintOutArray = [
-            borderLine,
-            this.programTitle,
-            borderLine
-        ];
-
-        this.linePrintOutArray.forEach((value, index, array) => {
-            console.log(value);
-        });
+        console.log(`${ borderLine }\n${ this.programTitle }\n${ borderLine }`);
     }
 
+    /**
+     *  Builds and displays the program's main menu
+     */
     displayMainMenu(): void {
-        console.log(this.subBorderSymbol.repeat(this.getTerminalSize().columns));
-        this.mainMenuOptions.forEach((value, index, array) => {
-            console.log(`${ index }) ${ value }`);
+        this.mainMenuOptions.forEach((value, key, map): void => {
+            console.log(`${ key }) ${ value }`);
         });
-
-        // TODO make selection text interactable
-        console.log("Please make your selection: ");
     }
 
 
