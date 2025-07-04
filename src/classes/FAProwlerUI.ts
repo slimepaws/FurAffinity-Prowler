@@ -16,13 +16,22 @@ export class FAProwlerUI {
     private subBorderSymbol: string = "-";
     private programTitle: string = "FurAffinity Prowler";
     terminalSize: ITerminalSize;
-    mainMenuOptions: Map<number, string> = new Map<number, string>()
+    menuDictionaryMain: Map<number, string> = new Map<number, string>();
+    menuDictionaryWriteFile: Map<number, string> = new Map<number, string>();
 
     constructor() {
+        // Get terminal size
         this.terminalSize = this.getTerminalSize();
-        this.mainMenuOptions.set(0, "Close program.");
-        this.mainMenuOptions.set(1, "Save FurAffinity information to file.");
-        this.mainMenuOptions.set(2, "Account Migration Services");
+
+        // Set main menu options
+        this.menuDictionaryMain.set(0, "Close program.");
+        this.menuDictionaryMain.set(1, "Save FurAffinity information to file.");
+        this.menuDictionaryMain.set(2, "Account Migration Services");
+
+        // Set write file menu options
+        this.menuDictionaryWriteFile.set(0, "Return to main menu.");
+        this.menuDictionaryWriteFile.set(1, "Save personal user information to file.");
+        this.menuDictionaryWriteFile.set(2, "Save artist watchlist to file.");
     }
 
     endProgram(): void {
@@ -45,6 +54,16 @@ export class FAProwlerUI {
     }
 
     /**
+     * Checks if the numerical selection is a valid menu option from a provided menuDictionary
+     * @param answer - numerical user selection, will test for NaN.
+     * @param menuOptionMap - dictionary containing the list of all menu items
+     * @returns true if a valid selection is contained within the provided dictionary.
+     */
+    isValidMenuSelection(answer:number, menuOptionMap: Map<number, string>): boolean {
+        return menuOptionMap.has(answer);
+    }
+
+    /**
      * Builds and displays the program's header bar
      */
     displayHeaderBar(): void {
@@ -56,7 +75,7 @@ export class FAProwlerUI {
      *  Builds and displays the program's main menu
      */
     displayMainMenu(): void {
-        this.mainMenuOptions.forEach((value: string, key: number): void => {
+        this.menuDictionaryMain.forEach((value: string, key: number): void => {
             console.log(`${ key }) ${ value }`);
         });
     }
@@ -65,7 +84,12 @@ export class FAProwlerUI {
      *  Builds and displays the program's Write to file submenu.
      */
     displayWriteJSONFileMenu(): void {
-        console.log(" JSON SAVE WIP");
+        console.clear();
+
+        console.log(`${ this.getSubHeaderLine() }\nWrite FurAffinity information to file.\n${ this.getSubHeaderLine() }`);
+        this.menuDictionaryWriteFile.forEach((value: string, key: number): void => {
+            console.log(`${ key }) ${ value }`);
+        });
     }
 
     /**

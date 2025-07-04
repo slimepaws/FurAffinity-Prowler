@@ -1,6 +1,7 @@
-import {IAuthor, IPagingResults, Login, MyWatchingList, Search, User, Gallery} from "furaffinity-api";
-import {SearchOptions} from "furaffinity-api/dist/Request";
+import { Gallery, IAuthor, IPagingResults, Login, MyWatchingList, Search, User } from "furaffinity-api";
+import { SearchOptions } from "furaffinity-api/dist/Request";
 import * as fs from "fs";
+import { promisify } from "util";
 
 export interface ISearchQuery {
     query: string,
@@ -88,6 +89,71 @@ export class FurAffinityUser implements IAuthor {
         }
 
         this.isWatchingList = new Array<IAuthor>();
+    }
+
+    writeFurAffinityInfoToFile(writeMode: number) {
+        function writeFurAffinityFileFunction(filePath: string, fileContent: IAuthor | IAuthor[]) {
+            fs.writeFileSync(filePath, JSON.stringify(fileContent));
+        }
+
+        switch (writeMode) {
+            // * Write personal user to JSON file.
+            case 0:
+                console.log("Gathering your user information... (this may take some time");
+                this.awaitUserInfo().then((results: IAuthor): void => {
+                    console.log("Successfully retrieved your user information.");
+                    this.setUserInfo(results);
+
+                    console.log("Writing user information to file...");
+                    let promisifiedUserWriteSync: (filePath: string, writeObject: (IAuthor | IAuthor[])) => Promise<unknown> = promisify(writeFurAffinityFileFunction);
+                    promisifiedUserWriteSync(this.JSONuserFilePath, this.getUserInfo()).then((): void => {
+                        console.log("Successfully save your user info to file");
+
+                        // TODO - write post file write behaviour
+                    });
+                });
+                break;
+
+            // * Write artist watch list to JSON file.
+            case 1:
+                console.log("");
+                break;
+
+
+            // * Write all info to JSON files.
+            case 2:
+                console.log("WIP");
+                break;
+        }
+    }
+
+    /**
+     * Sets all IAuthor fields into the FAUser instance.
+     * @param user - IAuthor logged-in user.
+     */
+    setUserInfo(user: IAuthor): void {
+        this.id = user.id;
+        this.name = user.name;
+        this.url = user.url;
+        this.avatar = user.avatar;
+        this.shinies = user.shinies;
+        this.watchLink = user.watchLink;
+        this.stats = user.stats;
+    }
+
+    /**
+     * Returns an IAuthor instance built from the FAUser instance.
+     */
+    getUserInfo(): IAuthor {
+        return {
+            id: this.id,
+            name: this.name,
+            url: this.url,
+            avatar: this.avatar,
+            shinies: this.shinies,
+            watchLink: this.watchLink,
+            stats: this.stats
+        };
     }
 
     /**
