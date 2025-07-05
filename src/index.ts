@@ -47,30 +47,26 @@ faUser.awaitUserLogin().then(() => {
                             throw InvalidMenuSelectionError;
                         }
 
-                        // TODO switch to which write function to use
                         switch (Number(answer)) {
-                            // Return to main menu
+                            // * Return to main menu
                             case 0:
                                 // TODO write function to return to main menu
-                                console.log("WIP");
+                                console.log("NOT YET IMPLEMENTED");
                                 break;
 
-                            // Save user info to file
+                            // * Save user info to file
                             case 1:
-                                // TODO write function to save only user data
-                                faUser.writeFurAffinityInfoToFile(0);
+                                faUser.writeFurAffinityDataToFile(0);
                                 break;
 
-                            // Save artist watch list to file
+                            // * Save artist watch list to file
                             case 2:
-                                // TODO write function to save only watch list
-                                console.log("WIP");
+                                faUser.writeFurAffinityDataToFile(1);
                                 break;
 
-                            // Save all info to respective files.
+                            // * Save all info to respective files.
                             case 3:
-                                // TODO write function to save all files to respective locations
-                                console.log("WIP");
+                                faUser.writeFurAffinityDataToFile(2);
                                 break;
                         }
                         fileWriteReadLine.close();

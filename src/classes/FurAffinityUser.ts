@@ -69,9 +69,11 @@ export class FurAffinityUser implements IAuthor {
             process.exit(0);
         }
 
-        // Reading if there is a cookies.json file.
-        // If so - parses it into this object instance
-        // If not - saves an empty cookies.json file to the specified location
+        /**
+         * Reading if there is a cookies.json file.
+         * If so - parses it into this object instance
+         * If not - saves an empty cookies.json file to the specified location
+         */
         try {
             if (fs.existsSync(this.JSONcookiesFilePath)) {
                 const tempCookies: ICookies = JSON.parse(fs.readFileSync(this.JSONcookiesFilePath).toString());
@@ -91,38 +93,71 @@ export class FurAffinityUser implements IAuthor {
         this.isWatchingList = new Array<IAuthor>();
     }
 
-    writeFurAffinityInfoToFile(writeMode: number) {
-        function writeFurAffinityFileFunction(filePath: string, fileContent: IAuthor | IAuthor[]) {
-            fs.writeFileSync(filePath, JSON.stringify(fileContent));
+    /**
+     * Writes specified data to JSON file.
+     * @param writeMode
+     * 0 - write user to file.
+     * 1 - write watchlist to file.
+     * 2 - write user & watchlist to file.
+     */
+    writeFurAffinityDataToFile(writeMode: number): void {
+        function furAffinityFileWriteSync(filePath: string, data: IAuthor | IAuthor[]): void {
+            fs.writeFileSync(filePath, JSON.stringify(data));
         }
+        const promisifiedFurAffinityFileWriteSync: (filePath: string, data: (IAuthor | IAuthor[])) => Promise<unknown> = promisify(furAffinityFileWriteSync);
 
         switch (writeMode) {
             // * Write personal user to JSON file.
             case 0:
-                console.log("Gathering your user information... (this may take some time");
-                this.awaitUserInfo().then((results: IAuthor): void => {
-                    console.log("Successfully retrieved your user information.");
-                    this.setUserInfo(results);
+                console.log("Retrieving user data... (this may take a while");
+                this.awaitUserInfo().then((result: IAuthor): void => {
+                    console.log("Successfully retrieved user data.");
 
-                    console.log("Writing user information to file...");
-                    let promisifiedUserWriteSync: (filePath: string, writeObject: (IAuthor | IAuthor[])) => Promise<unknown> = promisify(writeFurAffinityFileFunction);
-                    promisifiedUserWriteSync(this.JSONuserFilePath, this.getUserInfo()).then((): void => {
-                        console.log("Successfully save your user info to file");
+                    this.setUserInfo(result);
 
-                        // TODO - write post file write behaviour
+                    console.log("Writing user data to file... (this may take a while");
+                    promisifiedFurAffinityFileWriteSync(this.JSONuserFilePath, result).then((): void => {
+                        console.log("Successfully written!");
+                        // TODO - return to main menu / write menu after completion
                     });
                 });
                 break;
 
             // * Write artist watch list to JSON file.
             case 1:
-                console.log("");
-                break;
+                console.log("Retrieving author watchlist... (this may take a while");
+                this.awaitMyWatchingList().then((result: IAuthor[]): void => {
+                    console.log("Successfully retrieved watchlist data.");
 
+                    this.isWatchingList = result;
+
+                    console.log("Writing author watchlist to file... (this may take a while");
+                    promisifiedFurAffinityFileWriteSync(this.JSONuserFilePath, result).then((): void => {
+                        console.log("Successfully written!");
+                        // TODO - return to main menu / write menu after completion
+                    });
+                });
+                break;
 
             // * Write all info to JSON files.
             case 2:
-                console.log("WIP");
+                console.log("Retrieving all information... (this may take a while");
+                Promise.all([this.awaitUserInfo(), this.awaitMyWatchingList()]).then((results: [IAuthor, IAuthor[]]): void => {
+                    console.log("Successfully retrieved all data.");
+
+                    this.setUserInfo(results[0]);
+                    this.isWatchingList = results[1];
+
+                    Promise.all(
+                        [
+                            promisifiedFurAffinityFileWriteSync(this.JSONuserFilePath, this.getUserInfo()),
+                            promisifiedFurAffinityFileWriteSync(this.JSONartistWatchListFilePath, this.isWatchingList)
+                        ]
+                    ).then((): void => {
+                        console.log("Successfully written!");
+                        // TODO - return to main menu / write menu after completion
+                    })
+                });
                 break;
         }
     }
