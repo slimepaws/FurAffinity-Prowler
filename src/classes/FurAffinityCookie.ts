@@ -1,10 +1,5 @@
 import * as fs from "fs";
 
-export interface ICookies {
-    a: string,
-    b: string
-}
-
 export class Cookies implements ICookies {
     a!: string;
     b!: string;
@@ -83,7 +78,12 @@ export class Cookies implements ICookies {
 }
 
 
-class CookiesJSONNotFoundError extends Error {
+export interface ICookies {
+    a: string,
+    b: string
+}
+
+export class CookiesJSONNotFoundError extends Error {
     constructor(filePath: string) {
         super(`No valid ${filePath} at expected location, please relaunch the program once you have filled in the file ${filePath}.`);
     }
