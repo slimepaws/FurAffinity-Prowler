@@ -20,18 +20,20 @@ export class FAProwlerUI {
     menuDictionaryWriteFile: Map<number, string> = new Map<number, string>();
 
     constructor() {
-        // Get terminal size
+        // * Get terminal size
         this.terminalSize = this.getTerminalSize();
 
-        // Set main menu options
+        //  * Set main menu options
         this.menuDictionaryMain.set(0, "Close program.");
-        this.menuDictionaryMain.set(1, "Save FurAffinity information to file.");
-        this.menuDictionaryMain.set(2, "Account Migration Services");
+        this.menuDictionaryMain.set(1, "Display user data");
+        this.menuDictionaryMain.set(2, "Save FurAffinity information to file.");
+        this.menuDictionaryMain.set(3, "Account Migration Services");
 
-        // Set write file menu options
+        // * Set write file menu options
         this.menuDictionaryWriteFile.set(0, "Return to main menu.");
-        this.menuDictionaryWriteFile.set(1, "Save personal user information to file.");
-        this.menuDictionaryWriteFile.set(2, "Save artist watchlist to file.");
+        this.menuDictionaryWriteFile.set(1, "Save personal user data to file.");
+        this.menuDictionaryWriteFile.set(2, "Save artist watchlist data to file.");
+        this.menuDictionaryWriteFile.set(3, "Save user & artist data to file.");
     }
 
     endProgram(): void {
@@ -96,8 +98,5 @@ export class FAProwlerUI {
     displayAccountMigrationMenu(): void {
         console.log("Account migration WIP");
     }
-
-
-
 
 }

@@ -1,5 +1,6 @@
 import { FurAffinityUser } from "./classes/FurAffinityUser";
 import { FAProwlerUI, InvalidMenuSelectionError } from "./classes/FAProwlerUI";
+import {IAuthor} from "furaffinity-api";
 
 let prowlerUI: FAProwlerUI = new FAProwlerUI();
 
@@ -13,6 +14,14 @@ faUser.awaitUserLogin().then(() => {
     console.log("Successfully logged in user to FurAffinity!");
     console.log(prowlerUI.getSubHeaderLine());
     prowlerUI.displayMainMenu();
+
+    function redrawMenu(displayMenu?: Function): void {
+        console.clear();
+        prowlerUI.displayHeaderBar();
+        if (displayMenu != undefined) {
+            displayMenu();
+        }
+    }
 
     try {
         const readline = require('readline');
@@ -36,11 +45,39 @@ faUser.awaitUserLogin().then(() => {
                     prowlerUI.endProgram();
                     break;
 
-                // * Write FurAffinity user to file
+                // * Display user data
                 case 1:
-                    console.clear();
-                    prowlerUI.displayHeaderBar();
-                    prowlerUI.displayWriteJSONFileMenu();
+                    redrawMenu();
+                    console.log("Retrieving user data... (this may take a while)");
+
+                    faUser.awaitUserInfo().then((result: IAuthor) => {
+                        console.log("Successfully retrieved user data.")
+                        const strippedUser = {
+                            id: result.id,
+                            name: result.name,
+                            url: result.url,
+                            avatar: result.avatar
+                        }
+
+                        const strippedUserStats = {
+                            commentsEarned: result.stats?.commentsEarned,
+                            commentsMade: result.stats?.commentsMade,
+                            favs: result.stats?.favs,
+                            journals: result.stats?.journals,
+                            submissions: result.stats?.submissions,
+                            views: result.stats?.views,
+                            watching: result.stats?.watching,
+                        }
+
+                        console.table(strippedUser);
+                        console.table(strippedUserStats);
+                    })
+
+                    break;
+
+                // * Write FurAffinity user to file
+                case 2:
+                    redrawMenu(prowlerUI.displayWriteJSONFileMenu);
 
                     const readline = require('readline');
                     const fileWriteReadLine = readline.createInterface({
@@ -59,9 +96,7 @@ faUser.awaitUserLogin().then(() => {
                         switch (Number(answer)) {
                             // * Return to main menu
                             case 0:
-                                console.clear();
-                                prowlerUI.displayHeaderBar();
-                                prowlerUI.displayMainMenu();
+                                redrawMenu(prowlerUI.displayMainMenu);
                                 break;
 
                             // * Save user info to file
@@ -88,7 +123,7 @@ faUser.awaitUserLogin().then(() => {
                     break;
 
                 // * Account migration tools
-                case 2:
+                case 3:
                     prowlerUI.displayAccountMigrationMenu();
                     break;
             }
