@@ -1,7 +1,8 @@
-import { Gallery, IAuthor, IPagingResults, Login, MyWatchingList, Search, User } from "furaffinity-api";
+import { Gallery, Login, MyWatchingList, Search, User, IAuthor, IPagingResults } from "furaffinity-api";
+import { Cookies, ICookies} from "./FurAffinityCookie";
 import { SearchOptions } from "furaffinity-api/dist/Request";
-import * as fs from "fs";
 import { promisify } from "util";
+import * as fs from "fs";
 
 export interface ISearchQuery {
     query: string,
@@ -12,26 +13,6 @@ export interface IAuthorGalleryQuery {
     id: string,
     page: number,
     perPage?: number
-}
-
-export interface ICookies {
-    a: string,
-    b: string
-}
-
-export class Cookies implements ICookies {
-    a: string = "";
-    b: string = "";
-
-    constructor(cookieA?: string, cookieB?: string) {
-        if (!cookieA === undefined) {
-            this.a = <string>cookieA;
-        }
-
-        if (!cookieB === undefined) {
-            this.b = <string>cookieB;
-        }
-    }
 }
 
 export class FurAffinityUser implements IAuthor {
@@ -52,44 +33,14 @@ export class FurAffinityUser implements IAuthor {
         watching: boolean;
     };
 
-    cookies!: ICookies;
-    JSONuserFilePath: string = "User.json";
-    JSONartistWatchListFilePath: string = "WatchList.json";
-    JSONcookiesFilePath: string = "FurAffinityCookies.json";
+    cookiesUser!: ICookies;
+    cookiesMigration!: ICookies;
+
+    private JSONuserFilePath: string = "User.json";
+    private JSONartistWatchListFilePath: string = "WatchList.json";
 
     constructor() {
-        /**
-         * Writes the response to the user that there is no valid cookies.json file to read from. And creates an empty file to be filled out. Closes program after.
-         * @param cookiesFilePath - File path to the location of the FurAffinityCookies.json.
-         */
-        function writeEmptyCookiesFile(cookiesFilePath:string):void {
-            console.log("No FurAffinityCookies.JSON found at expected location or invalid format. Creating a blank one...");
-            fs.writeFileSync(cookiesFilePath, JSON.stringify(new Cookies()));
-            console.log("Blank file created, please fill in the JSON fields before re-running the program.");
-            process.exit(0);
-        }
-
-        /**
-         * Reading if there is a cookies.json file.
-         * If so - parses it into this object instance
-         * If not - saves an empty cookies.json file to the specified location
-         */
-        try {
-            if (fs.existsSync(this.JSONcookiesFilePath)) {
-                const tempCookies: ICookies = JSON.parse(fs.readFileSync(this.JSONcookiesFilePath).toString());
-                if (tempCookies.a == "" || tempCookies.b == "") {
-                    writeEmptyCookiesFile(this.JSONcookiesFilePath);
-                }
-                    this.cookies = tempCookies;
-            }
-            else {
-                writeEmptyCookiesFile(this.JSONcookiesFilePath)
-            }
-        }
-        catch (e) {
-            console.error(e)
-        }
-
+        this.cookiesUser = new Cookies(1);
         this.isWatchingList = new Array<IAuthor>();
     }
 
@@ -213,7 +164,7 @@ export class FurAffinityUser implements IAuthor {
      * @returns the await of Login().
      */
     async awaitUserLogin():Promise<void> {
-        return Login(this.cookies.a, this.cookies.b);
+        return Login(this.cookiesUser.a, this.cookiesUser.b);
     }
 
     /**

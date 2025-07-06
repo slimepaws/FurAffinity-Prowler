@@ -1,6 +1,6 @@
 import { FurAffinityUser } from "./classes/FurAffinityUser";
 import { FAProwlerUI, InvalidMenuSelectionError } from "./classes/FAProwlerUI";
-import {IAuthor} from "furaffinity-api";
+import { IAuthor } from "furaffinity-api";
 
 let prowlerUI: FAProwlerUI = new FAProwlerUI();
 
@@ -8,9 +8,9 @@ prowlerUI.displayHeaderBar();
 console.log("Program starting...");
 console.log("Logging user into FurAffinity...");
 
-let faUser:FurAffinityUser = new FurAffinityUser();
+let faUser: FurAffinityUser = new FurAffinityUser();
 
-faUser.awaitUserLogin().then(() => {
+faUser.awaitUserLogin().then((): void => {
     console.log("Successfully logged in user to FurAffinity!");
     console.log(prowlerUI.getSubHeaderLine());
     prowlerUI.displayMainMenu();
@@ -50,7 +50,7 @@ faUser.awaitUserLogin().then(() => {
                     redrawMenu();
                     console.log("Retrieving user data... (this may take a while)");
 
-                    faUser.awaitUserInfo().then((result: IAuthor) => {
+                    faUser.awaitUserInfo().then((result: IAuthor): void => {
                         console.log("Successfully retrieved user data.")
                         const strippedUser = {
                             id: result.id,
