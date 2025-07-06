@@ -25,7 +25,7 @@ To locate these cookies you must:
 6. Enter these values into the FurAffinityCookies.json file and save.
 7. Relaunch the program.
 
-> **Important: If you do not find any of the required .json files in your directory. Do not worry. Any required files will be generated, and you will be informed as needed.
+> **Important**: If you do not find any of the required .json files in your directory. Do not worry. Any required files will be generated, and you will be informed as needed.
 
 #### Example FurAffinityCookies.json:
 `{
