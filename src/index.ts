@@ -23,8 +23,11 @@ faUser.awaitUserLogin().then(() => {
 
         mainMenuReadLine.question("Please make your selection:  ", (answer: number): void => {
             if (isNaN(Number(answer)) || Number(answer) > prowlerUI.menuDictionaryMain.size - 1 || Number(answer) < 0) {
+                mainMenuReadLine.close();
                 throw InvalidMenuSelectionError;
             }
+
+            mainMenuReadLine.close();
 
             switch (Number(answer)) {
                 // * Shut down program
@@ -35,7 +38,10 @@ faUser.awaitUserLogin().then(() => {
 
                 // * Write FurAffinity user to file
                 case 1:
+                    console.clear();
+                    prowlerUI.displayHeaderBar();
                     prowlerUI.displayWriteJSONFileMenu();
+
                     const readline = require('readline');
                     const fileWriteReadLine = readline.createInterface({
                         input: process.stdin,
@@ -43,15 +49,19 @@ faUser.awaitUserLogin().then(() => {
                     });
 
                     fileWriteReadLine.question("Please make your selection: ", (answer: number): void => {
-                        if (!prowlerUI.isValidMenuSelection(answer, prowlerUI.menuDictionaryWriteFile)) {
+                        if (!prowlerUI.isValidMenuSelection(Number(answer), prowlerUI.menuDictionaryWriteFile)) {
+                            fileWriteReadLine.close();
                             throw InvalidMenuSelectionError;
                         }
+
+                        fileWriteReadLine.close();
 
                         switch (Number(answer)) {
                             // * Return to main menu
                             case 0:
-                                // TODO write function to return to main menu
-                                console.log("NOT YET IMPLEMENTED");
+                                console.clear();
+                                prowlerUI.displayHeaderBar();
+                                prowlerUI.displayMainMenu();
                                 break;
 
                             // * Save user info to file
@@ -68,6 +78,10 @@ faUser.awaitUserLogin().then(() => {
                             case 3:
                                 faUser.writeFurAffinityDataToFile(2);
                                 break;
+
+                            // * Catch-all input safety
+                            default:
+                                throw InvalidMenuSelectionError;
                         }
                         fileWriteReadLine.close();
                     });
@@ -78,7 +92,6 @@ faUser.awaitUserLogin().then(() => {
                     prowlerUI.displayAccountMigrationMenu();
                     break;
             }
-            mainMenuReadLine.close();
         });
     }
     catch (e) {

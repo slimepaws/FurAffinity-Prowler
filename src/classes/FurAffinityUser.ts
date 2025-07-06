@@ -109,13 +109,13 @@ export class FurAffinityUser implements IAuthor {
         switch (writeMode) {
             // * Write personal user to JSON file.
             case 0:
-                console.log("Retrieving user data... (this may take a while");
+                console.log("Retrieving user data... (this may take a while)");
                 this.awaitUserInfo().then((result: IAuthor): void => {
                     console.log("Successfully retrieved user data.");
 
                     this.setUserInfo(result);
 
-                    console.log("Writing user data to file... (this may take a while");
+                    console.log("Writing user data to file... (this may take a while)");
                     promisifiedFurAffinityFileWriteSync(this.JSONuserFilePath, result).then((): void => {
                         console.log("Successfully written!");
                         // TODO - return to main menu / write menu after completion
@@ -125,14 +125,14 @@ export class FurAffinityUser implements IAuthor {
 
             // * Write artist watch list to JSON file.
             case 1:
-                console.log("Retrieving author watchlist... (this may take a while");
+                console.log("Retrieving author watchlist... (this may take a while)");
                 this.awaitMyWatchingList().then((result: IAuthor[]): void => {
                     console.log("Successfully retrieved watchlist data.");
 
                     this.isWatchingList = result;
 
-                    console.log("Writing author watchlist to file... (this may take a while");
-                    promisifiedFurAffinityFileWriteSync(this.JSONuserFilePath, result).then((): void => {
+                    console.log("Writing author watchlist to file... (this may take a while)");
+                    promisifiedFurAffinityFileWriteSync(this.JSONartistWatchListFilePath, result).then((): void => {
                         console.log("Successfully written!");
                         // TODO - return to main menu / write menu after completion
                     });
@@ -141,7 +141,7 @@ export class FurAffinityUser implements IAuthor {
 
             // * Write all info to JSON files.
             case 2:
-                console.log("Retrieving all information... (this may take a while");
+                console.log("Retrieving all information... (this may take a while)");
                 Promise.all([this.awaitUserInfo(), this.awaitMyWatchingList()]).then((results: [IAuthor, IAuthor[]]): void => {
                     console.log("Successfully retrieved all data.");
 

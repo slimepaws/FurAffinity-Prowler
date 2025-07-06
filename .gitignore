@@ -9,3 +9,7 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
+/FurAffinityCookies.json
+/User.json
+/WatchList.json
+/package-lock.json

@@ -84,9 +84,7 @@ export class FAProwlerUI {
      *  Builds and displays the program's Write to file submenu.
      */
     displayWriteJSONFileMenu(): void {
-        console.clear();
-
-        console.log(`${ this.getSubHeaderLine() }\nWrite FurAffinity information to file.\n${ this.getSubHeaderLine() }`);
+        console.log(`Write FurAffinity information to file.\n${ this.getSubHeaderLine() }`);
         this.menuDictionaryWriteFile.forEach((value: string, key: number): void => {
             console.log(`${ key }) ${ value }`);
         });
